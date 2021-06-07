@@ -3,6 +3,7 @@ import app from "./app";
 import cluster from "cluster";
 import os from "os";
 import chalk from "chalk";
+import db from "./config/dbconnection";
 
 // Creating http server
 const server = http.createServer(app);
@@ -34,7 +35,10 @@ cluster.on("exit", (worker, code, signal) => {
 });
 
 // Handle Listen
-function listen() {
+async function listen() {
+  // Database connection
+  await db.sync();
+  //   Server listen
   server.listen(PORT);
   server.on("listening", () =>
     console.log(
