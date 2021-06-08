@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from "sequelize";
+import { Sequelize, DataTypes } from "sequelize";
 import { dbConfig } from "../constants/db";
 import { readdirSync } from "fs";
 import { join } from "path";

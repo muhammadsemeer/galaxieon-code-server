@@ -1,7 +1,7 @@
 import { Sequelize, UUIDV4, ModelCtor, Model } from "sequelize";
 
 export = (sequelize: Sequelize, DataTypes: any): ModelCtor<Model<any, any>> => {
-  const User: ModelCtor<Model<any, any>> | any = sequelize.define("User", {
+  const Template: ModelCtor<Model<any, any>> | any  = sequelize.define("Template", {
     id: {
       type: DataTypes.UUID,
       defaultValue: UUIDV4,
@@ -11,31 +11,22 @@ export = (sequelize: Sequelize, DataTypes: any): ModelCtor<Model<any, any>> => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
+    files: {
+      type: DataTypes.JSON,
       allowNull: false,
     },
-    profileImage: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    followers: {
+    used: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    following: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
+    language: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     status: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
   });
-
-  User.associate = ({ Instance }: any) => {
-    User.hasMany(Instance);
-  };
-
-  return User;
+  return Template;
 };
