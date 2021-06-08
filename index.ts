@@ -37,15 +37,20 @@ cluster.on("exit", (worker, code, signal) => {
 // Handle Listen
 async function listen() {
   // Database connection
-  await db.sync();
-  //   Server listen
-  server.listen(PORT);
-  server.on("listening", () =>
-    console.log(
-      chalk.cyanBright("Server "),
-      chalk.yellowBright(process.pid),
-      chalk.cyanBright("UP and running on "),
-      chalk.yellowBright(PORT)
-    )
-  );
+  db.sequelize
+    .authenticate()
+    .then(() => console.log("Database Connected"))
+    .catch((err: Error) => console.log("Connection Error:", err));
+  db.sequelize.sync().then(() => {
+    //   Server listen
+    server.listen(PORT);
+    server.on("listening", () =>
+      console.log(
+        chalk.cyanBright("Server "),
+        chalk.yellowBright(process.pid),
+        chalk.cyanBright("UP and running on "),
+        chalk.yellowBright(PORT)
+      )
+    );
+  });
 }

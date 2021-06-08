@@ -1,13 +1,13 @@
-import express from "express";
+import express, { Application } from "express";
 import helmet from "helmet";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import logger from "morgan";
 import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
 
-const app = express();
+const app: Application = express();
 
-const corsOption = {
+const corsOption: CorsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
