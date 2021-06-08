@@ -25,4 +25,9 @@ app
   .use(fileUpload())
   .use(cookieParser());
 
+// Routers
+import authRouter from "./routers/auth";
+
+app.use("/auth", authRouter);
+
 export default app;
