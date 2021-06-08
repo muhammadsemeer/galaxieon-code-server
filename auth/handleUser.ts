@@ -4,7 +4,9 @@ import { User } from "../types/User";
 const { User } = db;
 
 export const createUserOrLogUser = async (
-  payload: TokenPayload,
+  payload:
+    | TokenPayload
+    | { name: string; email: string | null; picture: string },
   cb: Function
 ): Promise<void> => {
   try {
@@ -15,7 +17,17 @@ export const createUserOrLogUser = async (
       attributes: ["id", "name", "email", "profileImage"],
     });
     if (!isUser) {
-      isUser = await User.create({ name, email, profileImage: picture });
+      let created: User = await User.create({
+        name,
+        email,
+        profileImage: picture,
+      });
+      isUser = {
+        id: created.id,
+        name: created.name,
+        email: created.email,
+        profileImage: created.profileImage,
+      };
       code = 201;
     }
     cb(null, isUser, code);
