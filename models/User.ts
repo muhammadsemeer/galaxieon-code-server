@@ -13,7 +13,7 @@ export = (sequelize: Sequelize, DataTypes: any): ModelCtor<Model<any, any>> => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     profileImage: {
       type: DataTypes.TEXT,
