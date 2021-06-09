@@ -52,7 +52,7 @@ router.post("/github", (req: Request, res: Response, next: NextFunction) => {
         createUserOrLogUser(
           {
             name: payload.name,
-            email: payload.email,
+            email: payload.login,
             picture: payload.avatar_url,
           },
           (err: Error, user: User, code: number) => {

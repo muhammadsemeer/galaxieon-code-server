@@ -13,7 +13,7 @@ export const createUserOrLogUser = async (
     const { name, email, picture } = payload;
     let code: number = 200;
     let isUser: User = await User.findOne({
-      where: { email: payload.email, status: true },
+      where: { email: email, status: true },
       attributes: ["id", "name", "email", "profileImage"],
     });
     if (!isUser) {
