@@ -9,8 +9,8 @@ import { TokenPayload } from "google-auth-library";
 import { githubVerfiy } from "../auth/github";
 import googleAuth from "../auth/google";
 import { createUserOrLogUser } from "../auth/handleUser";
-import { createToken } from "../auth/token";
-import { User } from "../types/User";
+import { createToken, verifyToken } from "../auth/token";
+import { RequestWithUser, User } from "../types/User";
 
 const router: Router = Router();
 
@@ -39,7 +39,7 @@ router.post("/google", (req: Request, res: Response, next: NextFunction) => {
             .json({ login: true, user });
         })
       )
-      .then((err) => next(err));
+      .catch((err) => next(err));
   } catch (err) {
     next(err);
   }
@@ -77,5 +77,13 @@ router.post("/github", (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 });
+
+router.get(
+  "/check",
+  verifyToken,
+  (req: RequestWithUser | any, res: Response) => {
+    res.json(req.user);
+  }
+);
 
 export default router;
