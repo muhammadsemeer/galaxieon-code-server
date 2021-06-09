@@ -1,7 +1,7 @@
 import { TokenPayload } from "google-auth-library";
 import db from "../config/dbconnection";
 import { User } from "../types/User";
-const { User } = db;
+import UserModel from "../models/User";
 
 export const createUserOrLogUser = async (
   payload:
@@ -12,12 +12,12 @@ export const createUserOrLogUser = async (
   try {
     const { name, email, picture } = payload;
     let code: number = 200;
-    let isUser: User = await User.findOne({
-      where: { email: email, status: true },
+    let isUser: User = await UserModel.findOne({
+      where: { email: payload.email, status: true },
       attributes: ["id", "name", "email", "profileImage"],
     });
     if (!isUser) {
-      let created: User = await User.create({
+      let created: User = await UserModel.create({
         name,
         email,
         profileImage: picture,

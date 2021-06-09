@@ -5,6 +5,10 @@ import os from "os";
 import chalk from "chalk";
 import db from "./config/dbconnection";
 
+import "./models/User";
+import "./models/Template";
+import "./models/Instance";
+
 // Creating http server
 const server = http.createServer(app);
 
@@ -37,11 +41,10 @@ cluster.on("exit", (worker, code, signal) => {
 // Handle Listen
 async function listen() {
   // Database connection
-  db.sequelize
-    .authenticate()
+  db.authenticate()
     .then(() => console.log("Database Connected"))
     .catch((err: Error) => console.log("Connection Error:", err));
-  db.sequelize.sync().then(() => {
+  db.sync().then(() => {
     //   Server listen
     server.listen(PORT);
     server.on("listening", () =>
