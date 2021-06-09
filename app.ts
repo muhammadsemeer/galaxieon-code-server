@@ -34,15 +34,13 @@ import authRouter from "./routers/auth";
 app.use("/auth", authRouter);
 
 // Catch 404
-app.use((req: Request, res: Response,next: NextFunction) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).send("Route Not Found");
 });
 
 // Catch error
-app.use((err: Error | any, req: Request, res: Response,next: NextFunction) => {
-  (process.env.NODE_ENV as string) === "development"
-    ? res.status(err.status || 500).json(err.message)
-    : res.sendStatus(err.status || 500);
+app.use((err: Error | any, req: Request, res: Response, next: NextFunction) => {
+  res.status(err.status || 500).json(err.message);
 });
 
 export default app;
