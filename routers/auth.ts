@@ -10,6 +10,7 @@ import { cookieOption } from "../app";
 const router: Router = Router();
 
 router.post("/google", (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.token) return next({ status: 400, message: "Token Required" })
   try {
     googleAuth(req.body.token)
       .then((payload: TokenPayload) =>
@@ -36,6 +37,7 @@ router.post("/google", (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.post("/github", (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.token) return next({ status: 400, message: "Token Required" })
   try {
     githubVerfiy(req.body.token)
       .then((payload: any) =>
