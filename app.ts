@@ -1,4 +1,10 @@
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, {
+  Application,
+  NextFunction,
+  Request,
+  Response,
+  CookieOptions,
+} from "express";
 import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
 import logger from "morgan";
@@ -9,6 +15,11 @@ import { config } from "dotenv";
 config();
 
 const app: Application = express();
+
+export const cookieOption: CookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production" ? true : false,
+};
 
 const corsOption: CorsOptions = {
   origin: "http://localhost:3000",

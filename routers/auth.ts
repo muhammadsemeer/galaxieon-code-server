@@ -1,23 +1,13 @@
-import {
-  Router,
-  Request,
-  Response,
-  NextFunction,
-  CookieOptions,
-} from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { TokenPayload } from "google-auth-library";
 import { githubVerfiy } from "../auth/github";
 import googleAuth from "../auth/google";
 import { createUserOrLogUser } from "../auth/handleUser";
 import { createToken, verifyToken } from "../auth/token";
 import { RequestWithUser, User } from "../types/User";
+import { cookieOption } from "../app";
 
 const router: Router = Router();
-
-const cookieOption: CookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production" ? true : false,
-};
 
 router.post("/google", (req: Request, res: Response, next: NextFunction) => {
   try {
