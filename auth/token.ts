@@ -2,6 +2,8 @@ import { RequestWithUser, User } from "../types/User";
 import { sign, verify } from "jsonwebtoken";
 import { config } from "dotenv";
 import { Response, NextFunction } from "express";
+import { cookieOption } from "../app";
+
 config();
 
 export const createToken = (
@@ -94,6 +96,9 @@ export const createAccessToken = (
     }
   );
   req.user = user;
-  res.cookie("accessToken", accessToken);
+  res.cookie("accessToken", accessToken, {
+    ...cookieOption,
+    expires: new Date(Date.now() + 86400000),
+  });
   return next();
 };
