@@ -47,5 +47,5 @@ export const createUserOrLogUser = async (
 
 export const checkUserActive = async ({ id }: UserToken) => {
   let { status } = await UserModel.findByPk(id, { attributes: ["status"] });
-  return status === "blocked" ? true : false;
+  return status === "blocked" || status === "deleted" ? true : false;
 };
