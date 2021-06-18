@@ -10,43 +10,13 @@ import { cookieOption } from "../app";
 const router: Router = Router();
 
 router.post("/google", (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body.token) return next({ status: 400, message: "Token Required" })
+  if (!req.body.token) return next({ status: 400, message: "Token Required" });
   try {
     googleAuth(req.body.token)
       .then((payload: TokenPayload) =>
-        createUserOrLogUser(payload, (err: Error, user: User, code: number) => {
-          if (err) return next(err);
-          let { accessToken, refreshToken } = createToken(user);
-          res
-            .cookie("accessToken", accessToken, {
-              ...cookieOption,
-              expires: new Date(Date.now() + 86400000),
-            })
-            .cookie("refreshToken", refreshToken, {
-              ...cookieOption,
-              expires: new Date(Date.now() + 5184000000),
-            })
-            .status(code)
-            .json({ login: true, user });
-        })
-      )
-      .catch((err) => next(err));
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.post("/github", (req: Request, res: Response, next: NextFunction) => {
-  if (!req.body.token) return next({ status: 400, message: "Token Required" })
-  try {
-    githubVerfiy(req.body.token)
-      .then((payload: any) =>
         createUserOrLogUser(
-          {
-            name: payload.name,
-            email: payload.login,
-            picture: payload.avatar_url,
-          },
+          payload,
+          "github",
           (err: Error, user: User, code: number) => {
             if (err) return next(err);
             let { accessToken, refreshToken } = createToken(user);
@@ -60,7 +30,50 @@ router.post("/github", (req: Request, res: Response, next: NextFunction) => {
                 expires: new Date(Date.now() + 5184000000),
               })
               .status(code)
-              .json({ login: true, user });
+              .json({
+                login: true,
+                isNewUser: code === 201 ? true : false,
+                user,
+              });
+          }
+        )
+      )
+      .catch((err) => next(err));
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/github", (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.token) return next({ status: 400, message: "Token Required" });
+  try {
+    githubVerfiy(req.body.token)
+      .then((payload: any) =>
+        createUserOrLogUser(
+          {
+            name: payload.name,
+            email: payload.login,
+            picture: payload.avatar_url,
+          },
+          "github",
+          (err: Error, user: User, code: number) => {
+            if (err) return next(err);
+            let { accessToken, refreshToken } = createToken(user);
+            res
+              .cookie("accessToken", accessToken, {
+                ...cookieOption,
+                expires: new Date(Date.now() + 86400000),
+              })
+              .cookie("refreshToken", refreshToken, {
+                ...cookieOption,
+                expires: new Date(Date.now() + 5184000000),
+              })
+              .status(code)
+              .json({
+                login: true,
+                isNewUser: code === 201 ? true : false,
+                user,
+              });
           }
         )
       )
