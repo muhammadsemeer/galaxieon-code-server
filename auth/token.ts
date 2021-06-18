@@ -1,8 +1,9 @@
-import { RequestWithUser, User } from "../types/User";
+import { RequestWithUser, User, UserToken } from "../types/User";
 import { sign, verify } from "jsonwebtoken";
 import { config } from "dotenv";
 import { Response, NextFunction } from "express";
 import { cookieOption } from "../app";
+import { checkUserActive } from "./handleUser";
 
 config();
 
@@ -29,20 +30,20 @@ export const createToken = (
 };
 
 export const verifyToken = (
-  req: RequestWithUser | any,
+  req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
   let accessToken: string = req.cookies.accessToken,
     refreshToken: string = req.cookies.refreshToken;
   if (accessToken && refreshToken) {
-    verifyAccessToken(accessToken)
+    verifyAccessToken(accessToken, next)
       .then((result) => {
         req.user = result;
         return next();
       })
       .catch((err) => {
-        verifyRefreshToken(refreshToken)
+        verifyRefreshToken(refreshToken, next)
           .then((result) => {
             createAccessToken(result, req, res, next);
           })
@@ -51,7 +52,7 @@ export const verifyToken = (
           });
       });
   } else if (!accessToken && refreshToken) {
-    verifyRefreshToken(refreshToken)
+    verifyRefreshToken(refreshToken, next)
       .then((result) => {
         createAccessToken(result, req, res, next);
       })
@@ -63,21 +64,35 @@ export const verifyToken = (
   }
 };
 
-function verifyAccessToken(token: string): Promise<Object | undefined> {
+function verifyAccessToken(
+  token: string,
+  next: NextFunction
+): Promise<Object | undefined> {
   return new Promise((resolve, reject) => {
-    verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
+    verify(token, process.env.JWT_SECRET as string, async (err, decoded) => {
       if (err) return reject(err);
+      if (await checkUserActive(decoded as UserToken))
+        return next({ status: 403, message: "User Blocked" });
       resolve(decoded);
     });
   });
 }
 
-function verifyRefreshToken(token: string): Promise<Object | undefined> {
+function verifyRefreshToken(
+  token: string,
+  next: NextFunction
+): Promise<Object | undefined> {
   return new Promise((resolve, reject) => {
-    verify(token, process.env.JWT_REFRESH_TOKEN as string, (err, decoded) => {
-      if (err) return reject(err);
-      resolve(decoded);
-    });
+    verify(
+      token,
+      process.env.JWT_REFRESH_TOKEN as string,
+      async (err, decoded) => {
+        if (err) return reject(err);
+        if (await checkUserActive(decoded as UserToken))
+          return next({ status: 403, message: "User Blocked" });
+        resolve(decoded);
+      }
+    );
   });
 }
 
