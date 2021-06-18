@@ -6,6 +6,7 @@ import { cookieOption } from "../app";
 import { checkUserActive } from "./handleUser";
 
 config();
+let unAuth = { message: "User not Authentictaed", status: 401 }
 
 export const createToken = (
   user: User
@@ -48,7 +49,7 @@ export const verifyToken = (
             createAccessToken(result, req, res, next);
           })
           .catch((err) => {
-            next({ message: "User not Authentictaed", status: 403 });
+            next(unAuth);
           });
       });
   } else if (!accessToken && refreshToken) {
@@ -57,10 +58,10 @@ export const verifyToken = (
         createAccessToken(result, req, res, next);
       })
       .catch((err) => {
-        next({ message: "User not Authentictaed", status: 403 });
+        next(unAuth);
       });
   } else {
-    next({ message: "User not Authentictaed", status: 403 });
+    next(unAuth);
   }
 };
 
@@ -72,7 +73,7 @@ function verifyAccessToken(
     verify(token, process.env.JWT_SECRET as string, async (err, decoded) => {
       if (err) return reject(err);
       if (await checkUserActive(decoded as UserToken))
-        return next({ status: 403, message: "User Blocked" });
+        return next(unAuth);
       resolve(decoded);
     });
   });
@@ -89,7 +90,7 @@ function verifyRefreshToken(
       async (err, decoded) => {
         if (err) return reject(err);
         if (await checkUserActive(decoded as UserToken))
-          return next({ status: 403, message: "User Blocked" });
+          return next(unAuth);
         resolve(decoded);
       }
     );
