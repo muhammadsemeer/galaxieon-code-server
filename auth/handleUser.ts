@@ -1,5 +1,5 @@
 import { TokenPayload } from "google-auth-library";
-import { User } from "../types/User";
+import { User, UserToken } from "../types/User";
 import UserModel from "../models/User";
 import { Op } from "sequelize";
 
@@ -43,4 +43,9 @@ export const createUserOrLogUser = async (
   } catch (error) {
     cb(error);
   }
+};
+
+export const checkUserActive = async ({ id }: UserToken) => {
+  let { status } = await UserModel.findByPk(id, { attributes: ["status"] });
+  return status === "blocked" ? true : false;
 };
