@@ -6,7 +6,8 @@ export interface User {
   profileImage?: string | null;
   followers?: number;
   following?: number;
-  status?: boolean;
+  authType?: "google" | "github";
+  status?: "active" | "blocked" | "deleted";
 }
 
 export interface RequestWithUser extends Request {
