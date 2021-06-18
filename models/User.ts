@@ -27,6 +27,10 @@ const User: ModelCtor<Model<any, any>> | any = db.define("User", {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  authType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   status: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
