@@ -11,5 +11,13 @@ export interface User {
 }
 
 export interface RequestWithUser extends Request {
-  user: any;
+  user?: any;
+}
+
+export interface UserToken {
+  id: string;
+  name: string;
+  email: string;
+  exp: number;
+  iat: number;
 }
