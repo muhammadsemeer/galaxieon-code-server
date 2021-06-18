@@ -16,7 +16,7 @@ router.post("/google", (req: Request, res: Response, next: NextFunction) => {
       .then((payload: TokenPayload) =>
         createUserOrLogUser(
           payload,
-          "github",
+          "google",
           (err: Error, user: User, code: number) => {
             if (err) return next(err);
             let { accessToken, refreshToken } = createToken(user);
