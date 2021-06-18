@@ -32,8 +32,8 @@ const User: ModelCtor<Model<any, any>> | any = db.define("User", {
     allowNull: false
   },
   status: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    type: DataTypes.STRING,
+    defaultValue: "active",
   },
 });
 
