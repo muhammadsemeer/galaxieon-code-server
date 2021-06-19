@@ -6,7 +6,7 @@ import { cookieOption } from "../app";
 import { checkUserActive } from "./handleUser";
 
 config();
-let unAuth = { message: "User not Authentictaed", status: 401 }
+let unAuth = { message: "User not Authentictaed", status: 401 };
 
 export const createToken = (
   user: User

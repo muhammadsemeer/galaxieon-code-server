@@ -2,6 +2,7 @@ import { TokenPayload } from "google-auth-library";
 import { User, UserToken } from "../types/User";
 import UserModel from "../models/User";
 import { Op } from "sequelize";
+import Admin from "../models/Admin";
 
 export const createUserOrLogUser = async (
   payload:
@@ -48,4 +49,22 @@ export const createUserOrLogUser = async (
 export const checkUserActive = async ({ id }: UserToken) => {
   let { status } = await UserModel.findByPk(id, { attributes: ["status"] });
   return status === "blocked" || status === "deleted" ? true : false;
+};
+
+export const logAdmin = async (
+  { email }: TokenPayload,
+  cb: Function
+): Promise<void> => {
+  try {
+    let admin: User = await Admin.findOne({
+      where: {
+        email: email,
+      },
+      attributes: ["id", "name", "email"],
+    });
+    console.log(admin)
+    admin ? cb(null, admin) : cb({ status: 404, message: "Admin Not Found" });
+  } catch (error) {
+    cb(error);
+  }
 };
