@@ -41,8 +41,10 @@ app
 
 // Routers
 import authRouter from "./routers/auth";
+import adminRouter from "./routers/admin";
 
 app.use("/auth", authRouter);
+app.use("/admin", adminRouter);
 
 // Catch 404
 app.use((req: Request, res: Response, next: NextFunction) => {
