@@ -23,6 +23,18 @@ export const getOneUser = (id: string): Promise<UserType> => {
   });
 };
 
-const forDefault = { getAllUsers, getOneUser };
+export const changeUserStatus = (
+  id: string,
+  status: string
+): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await User.update({ status }, { where: { id } });
+      resolve()
+    } catch (error) { reject(error) }
+  });
+};
+
+const forDefault = { getAllUsers, getOneUser, changeUserStatus };
 
 export default forDefault;

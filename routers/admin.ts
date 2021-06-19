@@ -3,7 +3,6 @@ import { verifyAdmin } from "../auth/token";
 import { RequestWithAdmin, User } from "../types/User";
 import UserDetails from "../helpers/admin/user";
 import { createUserOrLogUser } from "../auth/handleUser";
-import { nextTick } from "process";
 
 const router: Router = Router();
 
@@ -47,6 +46,17 @@ router.get(
   (req: RequestWithAdmin, res: Response, next: NextFunction) => {
     UserDetails.getOneUser(req.params.id)
       .then((user) => res.json(user))
+      .catch((err) => next(err));
+  }
+);
+
+router.patch(
+  "/user/:id",
+  (req: RequestWithAdmin, res: Response, next: NextFunction) => {
+    if (!req.query.status)
+      return next({ status: 400, message: "Query Param Status Missing" });
+    UserDetails.changeUserStatus(req.params.id, req.query.status as string)
+      .then(() => res.json({ status: true }))
       .catch((err) => next(err));
   }
 );
