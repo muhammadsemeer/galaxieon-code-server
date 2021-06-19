@@ -1,4 +1,9 @@
-import { RequestWithAdmin, RequestWithUser, User, UserToken } from "../types/User";
+import {
+  RequestWithAdmin,
+  RequestWithUser,
+  User,
+  UserToken,
+} from "../types/User";
 import { sign, verify } from "jsonwebtoken";
 import { config } from "dotenv";
 import { Response, NextFunction } from "express";
@@ -127,8 +132,9 @@ export const verifyAdmin = (
     verify(admAcess, process.env.JWT_ADMIN as string, (err, decoded) => {
       if (err) next({ status: 401, message: "Session TimeOut" });
       req.admin = decoded;
-      console.log(decoded);
       next();
     });
+  } else {
+    next({ status: 401, message: "No Authentication" });
   }
 };
