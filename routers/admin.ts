@@ -17,4 +17,13 @@ router.get(
   }
 );
 
+router.get(
+  "/user/:id",
+  (req: RequestWithAdmin, res: Response, next: NextFunction) => {
+    UserDetails.getOneUser(req.params.id)
+      .then((user) => res.json(user))
+      .catch((err) => next(err));
+  }
+);
+
 export default router;
