@@ -99,9 +99,13 @@ router.post("/admin", (req: Request, res: Response, next: NextFunction) => {
       .then((payload: TokenPayload) =>
         logAdmin(payload, (err: Error, admin: User) => {
           if (err) return next(err);
-          let token = JWT.sign({...admin}, process.env.JWT_ADMIN as string, {
-            expiresIn: "1d",
-          });
+          let token = JWT.sign(
+            { id: admin.id, name: admin.name, email: admin.email },
+            process.env.JWT_ADMIN as string,
+            {
+              expiresIn: "1d",
+            }
+          );
           res
             .cookie("admAcess", token, {
               ...cookieOption,
