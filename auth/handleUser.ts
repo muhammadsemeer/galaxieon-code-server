@@ -7,7 +7,7 @@ import Admin from "../models/Admin";
 export const createUserOrLogUser = async (
   payload:
     | TokenPayload
-    | { name: string; email: string | null; picture: string },
+    | { name: string; email: string | null; picture?: string },
   type: "google" | "github",
   cb: Function
 ): Promise<void> => {
