@@ -1,4 +1,4 @@
-import { RequestWithUser, User, UserToken } from "../types/User";
+import { RequestWithAdmin, RequestWithUser, User, UserToken } from "../types/User";
 import { sign, verify } from "jsonwebtoken";
 import { config } from "dotenv";
 import { Response, NextFunction } from "express";
@@ -72,8 +72,7 @@ function verifyAccessToken(
   return new Promise((resolve, reject) => {
     verify(token, process.env.JWT_SECRET as string, async (err, decoded) => {
       if (err) return reject(err);
-      if (await checkUserActive(decoded as UserToken))
-        return next(unAuth);
+      if (await checkUserActive(decoded as UserToken)) return next(unAuth);
       resolve(decoded);
     });
   });
@@ -89,8 +88,7 @@ function verifyRefreshToken(
       process.env.JWT_REFRESH_TOKEN as string,
       async (err, decoded) => {
         if (err) return reject(err);
-        if (await checkUserActive(decoded as UserToken))
-          return next(unAuth);
+        if (await checkUserActive(decoded as UserToken)) return next(unAuth);
         resolve(decoded);
       }
     );
@@ -117,4 +115,20 @@ export const createAccessToken = (
     expires: new Date(Date.now() + 86400000),
   });
   return next();
+};
+
+export const verifyAdmin = (
+  req: RequestWithAdmin,
+  res: Response,
+  next: NextFunction
+) => {
+  const { admAcess }: { admAcess: string } = req.cookies;
+  if (admAcess) {
+    verify(admAcess, process.env.JWT_ADMIN as string, (err, decoded) => {
+      if (err) next({ status: 401, message: "Session TimeOut" });
+      req.admin = decoded;
+      console.log(decoded);
+      next();
+    });
+  }
 };

@@ -13,6 +13,9 @@ export interface User {
 export interface RequestWithUser extends Request {
   user?: any;
 }
+export interface RequestWithAdmin extends Request {
+  admin?: any;
+}
 
 export interface UserToken {
   id: string;
