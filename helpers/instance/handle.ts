@@ -59,7 +59,6 @@ export const getInstanceById = (
           attributes: ["id", "name", "profileImage"],
         },
         attributes: fields,
-        raw: true,
       });
       if (!instance)
         return reject({ status: 404, message: "No Instance Found" });
