@@ -47,10 +47,16 @@ export const createInstance = (
   });
 };
 
-export const getInstanceById = (id: string): Promise<InstanceType> => {
+export const getInstanceById = (
+  id: string,
+  fields?: string[] | []
+): Promise<InstanceType> => {
   return new Promise(async (resolve, reject) => {
     try {
-      let instance: InstanceType = await Instance.findByPk(id, { raw: true });
+      let instance: InstanceType = await Instance.findByPk(id, {
+        attributes: fields,
+        raw: true,
+      });
       if (!instance)
         return reject({ status: 404, message: "No Instance Found" });
       resolve(instance);
@@ -123,7 +129,14 @@ export const updateInstance = (
   return new Promise(async (resolve, reject) => {
     try {
       await Instance.update(data, { where: { id } });
-      let updated = await getInstanceById(id);
+      let updated = await getInstanceById(id, [
+        "id",
+        "name",
+        "description",
+        "keywords",
+        "likes",
+        "shares",
+      ]);
       resolve(updated);
     } catch (error) {
       reject(error);
