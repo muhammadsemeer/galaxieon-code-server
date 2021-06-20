@@ -27,4 +27,15 @@ router.get("/:id", (req: Request, res: Response, next: NextFunction) => {
     .catch((err) => next(err));
 });
 
+router.get(
+  "/",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .getAllInstances(req.user.id)
+      .then((instances) => res.json(instances))
+      .catch((err) => next(err));
+  }
+);
+
 export default router;

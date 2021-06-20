@@ -2,6 +2,7 @@ import { copy } from "fs-extra";
 import path from "path";
 import Instance from "../../models/Instance";
 import Template from "../../models/Template";
+import User from "../../models/User";
 import { Instance as InstanceType } from "../../types/Instance";
 import { Template as TemplateType } from "../../types/Template";
 
@@ -58,6 +59,33 @@ export const getInstanceById = (id: string): Promise<InstanceType> => {
   });
 };
 
-const defaultExports = { createInstance, copyFolder, getInstanceById };
+export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let query = id
+        ? { where: { userId: id, status: true } }
+        : {
+            include: {
+              model: User,
+              attributes: ["id", "name", "profileImage"],
+            },
+            where: { status: true },
+          };
+      let instances: InstanceType[] = await Instance.findAll(query, {
+        raw: true,
+      });
+      resolve(instances);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const defaultExports = {
+  createInstance,
+  copyFolder,
+  getInstanceById,
+  getAllInstances,
+};
 
 export default defaultExports;
