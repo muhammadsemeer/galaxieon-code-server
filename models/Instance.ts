@@ -40,6 +40,10 @@ const Instance: ModelCtor<Model<any, any>> | any = db.define("Instance", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  views: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0,

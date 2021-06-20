@@ -54,6 +54,10 @@ export const getInstanceById = (
   return new Promise(async (resolve, reject) => {
     try {
       let instance: InstanceType = await Instance.findByPk(id, {
+        include: {
+          model: User,
+          attributes: ["id", "name", "profileImage"],
+        },
         attributes: fields,
         raw: true,
       });
