@@ -3,10 +3,11 @@ export type File = { name: string; files: string[] };
 export interface Files {
   name: string;
   files: string[];
-  folder: File[];
+  folder?: File[];
 }
 
 export interface Instance {
+  id: string;
   name: string;
   description?: string;
   keywords?: string;
