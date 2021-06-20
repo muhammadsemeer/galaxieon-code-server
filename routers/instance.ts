@@ -2,6 +2,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { verifyToken } from "../auth/token";
 import { RequestWithUser } from "../types/User";
 import instaceHandler from "../helpers/instance/handle";
+import fs from "fs";
+import path from "path";
 
 const router: Router = Router();
 
@@ -38,15 +40,23 @@ router.get(
   }
 );
 
-router.get(
-  "/code/*",
-  (req: Request, res: Response, next: NextFunction) => {
-    let path = Object.values(req.params).toString();
-    instaceHandler
-      .getCode(path)
-      .then((code) => res.json(code))
-      .catch((err) => next(err));
-  }
-);
+router.get("/code/*", (req: Request, res: Response, next: NextFunction) => {
+  let path = Object.values(req.params).toString();
+  instaceHandler
+    .getCode(path)
+    .then((code) => res.json(code))
+    .catch((err) => next(err));
+});
+
+router.get("/file/*", (req: Request, res: Response, next: NextFunction) => {
+  let src = path.join(
+    __dirname,
+    "../public/instances",
+    Object.values(req.params).toString()
+  );
+  if (!fs.existsSync(src))
+    return next({ status: 404, message: "Requested File Not Found" });
+  res.sendFile(src);
+});
 
 export default router;
