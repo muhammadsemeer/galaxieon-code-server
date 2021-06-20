@@ -98,12 +98,28 @@ export const getCode = (filepath: string): Promise<string> => {
   });
 };
 
+export const updateInstance = (
+  id: string,
+  data: InstanceType
+): Promise<InstanceType> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await Instance.update(data, { where: { id } });
+      let updated = await getInstanceById(id);
+      resolve(updated);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
   getInstanceById,
   getAllInstances,
   getCode,
+  updateInstance,
 };
 
 export default defaultExports;

@@ -59,4 +59,17 @@ router.get("/file/*", (req: Request, res: Response, next: NextFunction) => {
   res.sendFile(src);
 });
 
+router.put(
+  "/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .updateInstance(req.params.id, req.body)
+      .then((updated) => {
+        res.json(updated);
+      })
+      .catch((err) => next(err));
+  }
+);
+
 export default router;
