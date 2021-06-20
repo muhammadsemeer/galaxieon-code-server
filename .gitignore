@@ -7,3 +7,4 @@
 .env.development
 
 files.json
+public/instances
