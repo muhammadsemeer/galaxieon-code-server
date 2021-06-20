@@ -4,6 +4,7 @@ import { dbConfig } from "../constants/db";
 const sequelize: Sequelize = new Sequelize({
   ...dbConfig,
   dialect: "mariadb",
+  dialectOptions: { autoJsonMap: false },
 });
 
 export default sequelize;
