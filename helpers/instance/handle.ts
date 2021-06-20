@@ -44,6 +44,19 @@ export const createInstance = (
   });
 };
 
-const defaultExports = { createInstance, copyFolder };
+export const getInstanceById = (id: string): Promise<InstanceType> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance: InstanceType = await Instance.findByPk(id, { raw: true });
+      if (!instance)
+        return reject({ status: 404, message: "No Instance Found" });
+      resolve(instance);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const defaultExports = { createInstance, copyFolder, getInstanceById };
 
 export default defaultExports;
