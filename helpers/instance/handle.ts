@@ -64,12 +64,30 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
   return new Promise(async (resolve, reject) => {
     try {
       let query = id
-        ? { where: { userId: id, status: true } }
+        ? {
+            attributes: [
+              "id",
+              "name",
+              "description",
+              "keywords",
+              "likes",
+              "shares",
+            ],
+            where: { userId: id, status: true },
+          }
         : {
             include: {
               model: User,
               attributes: ["id", "name", "profileImage"],
             },
+            attributes: [
+              "id",
+              "name",
+              "description",
+              "keywords",
+              "likes",
+              "shares",
+            ],
             where: { status: true },
           };
       let instances: InstanceType[] = await Instance.findAll(query, {
