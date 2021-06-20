@@ -38,4 +38,15 @@ router.get(
   }
 );
 
+router.get(
+  "/code/*",
+  (req: Request, res: Response, next: NextFunction) => {
+    let path = Object.values(req.params).toString();
+    instaceHandler
+      .getCode(path)
+      .then((code) => res.json(code))
+      .catch((err) => next(err));
+  }
+);
+
 export default router;

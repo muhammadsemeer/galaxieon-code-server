@@ -1,3 +1,4 @@
+import fs from "fs";
 import { copy } from "fs-extra";
 import path from "path";
 import Instance from "../../models/Instance";
@@ -81,11 +82,28 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
   });
 };
 
+export const getCode = (filepath: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    try {
+      let src = path.join(__dirname, "../../public/instances", filepath);
+      if (!fs.existsSync(src))
+        return reject({ status: 404, message: "Requested File Not Found" });
+      fs.readFile(src, (err, data) => {
+        if (err) return reject(err);
+        resolve(data.toString());
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
   getInstanceById,
   getAllInstances,
+  getCode,
 };
 
 export default defaultExports;
