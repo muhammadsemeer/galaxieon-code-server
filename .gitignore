@@ -5,3 +5,5 @@
 .env.test
 .env.production
 .env.development
+
+files.json
