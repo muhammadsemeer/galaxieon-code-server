@@ -17,12 +17,12 @@ const Instance: ModelCtor<Model<any, any>> | any = db.define("Instance", {
     allowNull: true,
   },
   keywords: {
-    type: DataTypes.JSON,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   isPriavte: {
     type: DataTypes.BOOLEAN,
-    defaultValue: 0,
+    defaultValue: false,
   },
   fork: {
     type: DataTypes.JSON,
