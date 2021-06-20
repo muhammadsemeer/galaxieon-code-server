@@ -29,6 +29,7 @@ export const createInstance = (
       let newInstance: InstanceType = await Instance.create({
         ...data,
         files: template.files,
+        UserId: userId,
       });
       let from = path.join(
         __dirname,
