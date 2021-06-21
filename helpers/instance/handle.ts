@@ -24,13 +24,15 @@ export const createInstance = (
   return new Promise(async (resolve, reject) => {
     try {
       let template: TemplateType = await Template.findByPk(templateId, {
-        attributes: ["name", "files"],
+        attributes: ["name", "files", "language"],
         raw: true,
       });
-
+      let tempConfig = template.language.includes("HTML")
+        ? { files: template.files, subdomain: Date.now().toString(36) }
+        : { files: template.files };
       let newInstance: InstanceType = await Instance.create({
         ...data,
-        files: template.files,
+        ...tempConfig,
         UserId: userId,
       });
       let from = path.join(
