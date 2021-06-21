@@ -6,6 +6,7 @@ import Template from "../../models/Template";
 import User from "../../models/User";
 import { Instance as InstanceType } from "../../types/Instance";
 import { Template as TemplateType } from "../../types/Template";
+import { Op } from "sequelize";
 
 export const copyFolder = (from: string, to: string): Promise<void> => {
   return new Promise((resolve, reject) =>
@@ -55,7 +56,8 @@ export const getInstanceById = (
 ): Promise<InstanceType> => {
   return new Promise(async (resolve, reject) => {
     try {
-      let instance: InstanceType = await Instance.findByPk(id, {
+      let instance: InstanceType = await Instance.findOne({
+        where: { [Op.or]: { id, subdomain: id } },
         include: {
           model: User,
           attributes: ["id", "name", "profileImage"],
