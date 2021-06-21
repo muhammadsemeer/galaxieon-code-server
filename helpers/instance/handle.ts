@@ -56,14 +56,17 @@ export const getInstanceById = (
 ): Promise<InstanceType> => {
   return new Promise(async (resolve, reject) => {
     try {
-      let instance: InstanceType = await Instance.findOne({
-        where: { [Op.or]: { id, subdomain: id } },
-        include: {
-          model: User,
-          attributes: ["id", "name", "profileImage"],
+      let instance: InstanceType = await Instance.findOne(
+        {
+          where: { [Op.or]: { id, subdomain: id } },
+          include: {
+            model: User,
+            attributes: ["id", "name", "profileImage"],
+          },
+          attributes: fields,
         },
-        attributes: fields,
-      });
+        { raw: true }
+      );
       if (!instance)
         return reject({ status: 404, message: "No Instance Found" });
       resolve(instance);

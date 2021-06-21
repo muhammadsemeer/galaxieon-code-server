@@ -11,6 +11,7 @@ import logger from "morgan";
 import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
+import path from "path"
 
 config();
 
@@ -43,10 +44,13 @@ app
 import authRouter from "./routers/auth";
 import adminRouter from "./routers/admin";
 import instanceRouter from "./routers/instance";
+import staticRouter from "./routers/static";
 
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
-app.use("/instance", instanceRouter)
+app.use("/instance", instanceRouter);
+app.use(staticRouter);
+app.use(express.static(path.join(__dirname, "public/instances")));
 
 // Catch 404
 app.use((req: Request, res: Response, next: NextFunction) => {
