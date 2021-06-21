@@ -8,6 +8,10 @@ const Instance: ModelCtor<Model<any, any>> | any = db.define("Instance", {
     defaultValue: UUIDV4,
     primaryKey: true,
   },
+  subdomain: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
