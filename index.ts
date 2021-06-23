@@ -2,10 +2,12 @@ import http from "http";
 import app from "./app";
 import chalk from "chalk";
 import db from "./config/dbconnection";
+import { Server } from "socket.io";
 
 import "./models/User";
 import "./models/Template";
 import "./models/Instance";
+import { connection } from "./helpers/socket/handler";
 
 // Creating http server
 const server = http.createServer(app);
@@ -16,7 +18,18 @@ app.set("port", PORT);
 
 server.listen(PORT);
 
-server.on("listening", listen)
+// Socket io
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => connection(socket, io));
+
+server.on("listening", listen);
 
 // Handle Listen
 async function listen() {
@@ -28,7 +41,6 @@ async function listen() {
     //   Server listen
     console.log(
       chalk.cyanBright("Server "),
-      chalk.yellowBright(process.pid),
       chalk.cyanBright("UP and running on "),
       chalk.yellowBright(PORT)
     );
