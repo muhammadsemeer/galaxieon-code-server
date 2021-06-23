@@ -11,7 +11,7 @@ import logger from "morgan";
 import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
-import path from "path"
+import { randomBytes } from "crypto";
 
 config();
 
@@ -30,7 +30,13 @@ const corsOption: CorsOptions = {
 };
 
 // Cors and Helmet (CSP)
-app.use(helmet()).use(cors(corsOption));
+app
+  .use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  )
+  .use(cors(corsOption));
 
 // Middlewares
 app
@@ -50,7 +56,7 @@ app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/instance", instanceRouter);
 app.use(staticRouter);
-app.use(express.static(path.join(__dirname, "public/instances")));
+// app.use(express.static(path.join(__dirname, "public/instances")));
 
 // Catch 404
 app.use((req: Request, res: Response, next: NextFunction) => {

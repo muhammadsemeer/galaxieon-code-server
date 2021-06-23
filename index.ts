@@ -8,6 +8,7 @@ import "./models/User";
 import "./models/Template";
 import "./models/Instance";
 import { connection } from "./helpers/socket/handler";
+import { liveReloadSocket } from "./helpers/instance/livereload";
 
 // Creating http server
 const server = http.createServer(app);
@@ -28,6 +29,10 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => connection(socket, io));
+let liveReload = io.of("/liveReload");
+liveReload.on("connection", (socket) =>
+  liveReloadSocket(liveReload, socket)
+);
 
 server.on("listening", listen);
 
