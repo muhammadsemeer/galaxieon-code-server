@@ -48,16 +48,6 @@ router.get("/code/*", (req: Request, res: Response, next: NextFunction) => {
     .catch((err) => next(err));
 });
 
-router.get("/file/*", (req: Request, res: Response, next: NextFunction) => {
-  let src = path.join(
-    __dirname,
-    "../public/instances",
-    Object.values(req.params).toString()
-  );
-  if (!fs.existsSync(src))
-    return next({ status: 404, message: "Requested File Not Found" });
-  res.sendFile(src);
-});
 
 router.put(
   "/:id",
