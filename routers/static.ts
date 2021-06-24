@@ -9,7 +9,7 @@ router.use(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const subdomain = req.subdomains;
     if (!subdomain[1]) return next();
-    let instance = await instaceHandler.getInstanceById(subdomain[1]);
+    let instance = await instaceHandler.getInstanceById(subdomain[1],["id","autopreview"]);
     req.url = req.path === "/" ? "index.html" : req.path;
     let src = path.join(__dirname, "../public/instances", instance.id, req.url);
     let pathArray = req.path.split(".");
