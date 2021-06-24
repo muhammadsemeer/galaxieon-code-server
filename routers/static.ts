@@ -14,7 +14,8 @@ router.use(async (req: Request, res: Response, next: NextFunction) => {
     let src = path.join(__dirname, "../public/instances", instance.id, req.url);
     let pathArray = req.path.split(".");
     let ext = pathArray[pathArray.length - 1];
-    if (ext === "html") return res.send(await liveReload(src,instance.id));
+    if (ext === "html" && instance.autopreview)
+      return res.send(await liveReload(src, instance.id));
     res.sendFile(src);
   } catch (error) {
     next(error);
