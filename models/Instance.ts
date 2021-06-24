@@ -38,7 +38,7 @@ const Instance: ModelCtor<Model<any, any>> | any = db.define("Instance", {
   },
   autosave: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    defaultValue: false,
   },
   autopreview: {
     type: DataTypes.BOOLEAN,
