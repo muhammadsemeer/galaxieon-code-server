@@ -42,7 +42,7 @@ const Instance: ModelCtor<Model<any, any>> | any = db.define("Instance", {
   },
   autopreview: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
   },
   views: {
     type: DataTypes.INTEGER,
