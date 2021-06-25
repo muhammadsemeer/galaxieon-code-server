@@ -9,6 +9,7 @@ import { config } from "dotenv";
 import { Response, NextFunction } from "express";
 import { cookieOption } from "../app";
 import { checkUserActive } from "./handleUser";
+import { SocketWithCookies } from "../helpers/socket/socket-cookie-parser";
 
 config();
 let unAuth = { message: "User not Authentictaed", status: 401 };
@@ -137,4 +138,13 @@ export const verifyAdmin = (
   } else {
     next({ status: 401, message: "No Authentication" });
   }
+};
+
+export const verifyTokenSocket = (
+  socket: SocketWithCookies,
+  next: any
+) => {
+  let req: RequestWithUser = socket.request as RequestWithUser;
+  req.cookies = socket.cookies
+  verifyToken(req,{} as Response,next)
 };
