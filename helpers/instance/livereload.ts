@@ -28,7 +28,7 @@ const liveReload = (src: string, id: string): Promise<string> => {
         socket.on('changes', ()=> location.reload())
       </script>
       `);
-      body.appendChild(script);
+      body?.appendChild(script);
 
       resolve(document.toString());
     });
