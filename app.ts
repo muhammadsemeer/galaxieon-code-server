@@ -23,7 +23,7 @@ export const cookieOption: CookieOptions = {
 };
 
 const corsOption: CorsOptions = {
-  origin: "http://code.galaxieon.com:3000",
+  origin: "http://localhost:3000",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   exposedHeaders: ["set-cookie"],
