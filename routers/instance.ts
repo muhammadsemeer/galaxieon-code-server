@@ -11,6 +11,7 @@ router.post(
   "/create",
   verifyToken,
   (req: RequestWithUser, res: Response, next: NextFunction) => {
+    console.log(req.user)
     if (!req.query.template)
       return next({ status: 400, message: "Template Id Missing" });
     instaceHandler

@@ -39,8 +39,7 @@ export const createToken = (
 export const verifyToken = (
   req: RequestWithUser,
   res: Response,
-  next: NextFunction,
-  isSocket?: boolean
+  next: NextFunction
 ) => {
   let accessToken: string = req.cookies.accessToken,
     refreshToken: string = req.cookies.refreshToken;
@@ -53,21 +52,19 @@ export const verifyToken = (
       .catch((err) => {
         verifyRefreshToken(refreshToken, next)
           .then((result) => {
-            if (isSocket) return next();
             createAccessToken(result, req, res, next);
           })
           .catch((err) => {
-            if (isSocket) return next();
             next(unAuth);
           });
       });
   } else if (!accessToken && refreshToken) {
     verifyRefreshToken(refreshToken, next)
       .then((result) => {
-        if (isSocket) return next();
         createAccessToken(result, req, res, next);
       })
       .catch((err) => {
+        console.log(err);
         next(unAuth);
       });
   } else {
@@ -120,10 +117,11 @@ export const createAccessToken = (
     }
   );
   req.user = user;
-  res.cookie("accessToken", accessToken, {
-    ...cookieOption,
-    expires: new Date(Date.now() + 86400000),
-  });
+  res.cookie &&
+    res.cookie("accessToken", accessToken, {
+      ...cookieOption,
+      expires: new Date(Date.now() + 86400000),
+    });
   return next();
 };
 
@@ -147,5 +145,5 @@ export const verifyAdmin = (
 export const verifyTokenSocket = (socket: SocketWithCookies, next: any) => {
   let req: RequestWithUser = socket.request as RequestWithUser;
   req.cookies = socket.cookies;
-  verifyToken(req, {} as Response, next, true);
+  verifyToken(req, {} as Response, next);
 };
