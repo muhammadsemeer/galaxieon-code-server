@@ -60,6 +60,11 @@ const Instance: ModelCtor<Model<any, any>> | any = db.define("Instance", {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  lastEditied: {
+    type: DataTypes.DATE,
+    defaultValue: null,
+    allowNull: true,
+  },
   deletedAt: {
     type: DataTypes.DATE,
     defaultValue: null,
