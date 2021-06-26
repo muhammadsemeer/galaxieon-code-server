@@ -154,6 +154,17 @@ export const updateInstance = (
   });
 };
 
+export const edited = (id: string): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await Instance.update({ lastEditied: Date.now() }, { where: { id } });
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
@@ -161,6 +172,7 @@ const defaultExports = {
   getAllInstances,
   getCode,
   updateInstance,
+  edited,
 };
 
 export default defaultExports;
