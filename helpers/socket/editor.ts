@@ -22,7 +22,7 @@ export const editorSocket = (io: Namespace, socket: SocketWithCookies) => {
   });
 
   socket.on("execute", (file, instanceId) => {
-    compile(file, instanceId, (err, result) => {
+    compile(file, instanceId,socket, (err, result) => {
       socket.emit("exe_result", err, result);
     });
   });

@@ -1,8 +1,10 @@
 import { spawn } from "child_process";
+import { SocketWithCookies } from "../socket/socket-cookie-parser";
 import Executor, { exeCallBack } from "./base";
 
 class CandCPPComplier extends Executor {
   constructor(
+    public socket: SocketWithCookies,
     filename: string,
     ext: string,
     instanceId: string,
@@ -31,13 +33,20 @@ class CandCPPComplier extends Executor {
   }
 
   private execute(callback: exeCallBack) {
-    const { fileName, src } = this;
+    const { fileName, src, socket } = this;
     const executor = spawn(`./${fileName}.out`, { cwd: src });
-    executor.stdout.on("data", (data) => {
-      //  executor.stdin.write();
+    let count = 0;
+    executor.stdout.on("data", async (data) => {
+      const call = (): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          socket.emit("input", ++count, (value: any) =>
+            resolve(value.toString())
+          );
+        });
+      };
       callback(null, data.toString());
-      executor.stdin.end();
-      executor.kill();
+      let input = await call();
+      executor.stdin.write(input + "\n");
     });
     executor.stdin.on("error", (err) => {
       callback({ code: 1, message: err.message });
@@ -46,7 +55,8 @@ class CandCPPComplier extends Executor {
     executor.stderr.on("data", (data) => callback(null, data.toString()));
     executor.on("error", (err) => callback({ code: 1, message: err.message }));
     executor.on("exit", (code) => {
-      callback(null, `Process exited with ${code}`);
+      callback(null, `\nprocess exited with code ${code}`);
+      executor.stdin.end();
     });
   }
 }
