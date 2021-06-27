@@ -1,5 +1,6 @@
 import { Namespace } from "socket.io";
 import { editCode } from "../instance/codeHandler";
+import compile from "../instance/compile";
 import { edited } from "../instance/handle";
 import { SocketWithCookies } from "./socket-cookie-parser";
 
@@ -18,6 +19,12 @@ export const editorSocket = (io: Namespace, socket: SocketWithCookies) => {
       .catch((err) => {
         cb(err, "FAIL");
       });
+  });
+
+  socket.on("execute", (file, instanceId) => {
+    compile(file, instanceId, (err, result) => {
+      socket.emit("exe_result", err, result);
+    });
   });
 
   socket.on("disconnect", async () => {
