@@ -25,7 +25,7 @@ export const createInstance = (
   return new Promise(async (resolve, reject) => {
     try {
       let template: TemplateType = await Template.findByPk(templateId, {
-        attributes: ["name", "files", "language"],
+        attributes: ["name", "files", "language", "used"],
         raw: true,
       });
       let tempConfig = template.language.includes("HTML")
@@ -43,6 +43,10 @@ export const createInstance = (
       );
       let to = path.join(__dirname, "../../public/instances/", newInstance.id);
       await copyFolder(from, to);
+      await Template.update(
+        { used: template.used + 1 },
+        { where: { id: templateId } }
+      );
       resolve(newInstance);
     } catch (error) {
       reject(error);
