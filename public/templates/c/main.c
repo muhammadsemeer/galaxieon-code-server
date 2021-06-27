@@ -2,7 +2,8 @@
 
 int main()
 {
-    setbuf(stdout, NULL); // Must Need Before Variable declaration OtherWise complier will not give the expected output
-    printf("Hello World!");
+    char welcome[100] = "Welcome to Galaxieon Code";
+    setbuf(stdout, NULL); // Must Need Before/After Variable declaration OtherWise complier will not give the expected output
+    printf("%s", welcome);
     return 0;
 }
