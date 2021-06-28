@@ -2,8 +2,6 @@ import { Router, Request, Response, NextFunction } from "express";
 import { verifyToken } from "../auth/token";
 import { RequestWithUser } from "../types/User";
 import instaceHandler from "../helpers/instance/handle";
-import fs from "fs";
-import path from "path";
 
 const router: Router = Router();
 
@@ -11,7 +9,7 @@ router.post(
   "/create",
   verifyToken,
   (req: RequestWithUser, res: Response, next: NextFunction) => {
-    console.log(req.user)
+    console.log(req.user);
     if (!req.query.template)
       return next({ status: 400, message: "Template Id Missing" });
     instaceHandler
@@ -49,7 +47,6 @@ router.get("/code/*", (req: Request, res: Response, next: NextFunction) => {
     .catch((err) => next(err));
 });
 
-
 router.put(
   "/:id",
   verifyToken,
@@ -59,6 +56,22 @@ router.put(
       .then((updated) => {
         res.json(updated);
       })
+      .catch((err) => next(err));
+  }
+);
+
+router.delete(
+  "/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    let date = new Date(
+      new Date().setDate(new Date().getDate() + 3)
+    ).toDateString();
+    instaceHandler
+      .deleteInstance(req.params.id, req.user.id)
+      .then(() =>
+        res.json({ status: "OK", message: `You Can retrive it before ${date}` })
+      )
       .catch((err) => next(err));
   }
 );

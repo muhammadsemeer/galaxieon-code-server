@@ -169,6 +169,22 @@ export const edited = (id: string): Promise<void> => {
   });
 };
 
+export const deleteInstance = (id: string,userId:string): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance = await getInstanceById(id)
+      if (instance.UserId !== userId) return reject({ status: 403, message: "You Have No right to delete other's Instance" })
+      await Instance.update(
+        { deletedAt: Date.now(), status: false },
+        { where: { id } }
+      );
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
@@ -177,6 +193,7 @@ const defaultExports = {
   getCode,
   updateInstance,
   edited,
+  deleteInstance,
 };
 
 export default defaultExports;
