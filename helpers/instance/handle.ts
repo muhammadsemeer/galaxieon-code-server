@@ -169,16 +169,53 @@ export const edited = (id: string): Promise<void> => {
   });
 };
 
-export const deleteInstance = (id: string,userId:string): Promise<void> => {
+export const deleteInstance = (id: string, userId: string): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     try {
-      let instance = await getInstanceById(id)
-      if (instance.UserId !== userId) return reject({ status: 403, message: "You Have No right to delete other's Instance" })
+      let instance = await getInstanceById(id);
+      if (instance.UserId !== userId)
+        return reject({
+          status: 403,
+          message: "You Have No right to delete other's Instance",
+        });
       await Instance.update(
         { deletedAt: Date.now(), status: false },
         { where: { id } }
       );
       resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const getDeletedInstances = (
+  userId: string
+): Promise<InstanceType[]> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let fromDate = new Date(new Date().setDate(new Date().getDate() - 3));
+      let toDate = new Date(new Date().setHours(24, 0, 0, 0));
+      let instances: InstanceType[] = await Instance.findAll(
+        {
+          where: {
+            deletedAt: { [Op.gte]: fromDate, [Op.lte]: toDate },
+            status: false,
+            UserId: userId,
+          },
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "keywords",
+            "likes",
+            "views",
+            "shares",
+          ],
+        },
+        { raw: true }
+      );
+      resolve(instances);
     } catch (error) {
       reject(error);
     }
@@ -194,6 +231,7 @@ const defaultExports = {
   updateInstance,
   edited,
   deleteInstance,
+  getDeletedInstances,
 };
 
 export default defaultExports;

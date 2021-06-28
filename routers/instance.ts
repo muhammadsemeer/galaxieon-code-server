@@ -21,6 +21,17 @@ router.post(
   }
 );
 
+router.get(
+  "/deleted",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .getDeletedInstances(req.user.id)
+      .then((instances) => res.json(instances))
+      .catch((err) => next(err));
+  }
+);
+
 router.get("/:id", (req: Request, res: Response, next: NextFunction) => {
   instaceHandler
     .getInstanceById(req.params.id)
