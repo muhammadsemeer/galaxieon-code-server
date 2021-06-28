@@ -52,12 +52,13 @@ import authRouter from "./routers/auth";
 import adminRouter from "./routers/admin";
 import instanceRouter from "./routers/instance";
 import staticRouter from "./routers/static";
+import templateRouter from "./routers/template";
 
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/instance", instanceRouter);
+app.use("/template", templateRouter);
 app.use(staticRouter);
-// app.use(express.static(path.join(__dirname, "public/instances")));
 
 // Catch 404
 app.use((req: Request, res: Response, next: NextFunction) => {
