@@ -87,4 +87,15 @@ router.delete(
   }
 );
 
+router.get(
+  "/retrive/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .retriveInstance(req.params.id,req.user.id)
+      .then((instance) => res.json(instance))
+      .catch((err) => next(err));
+  }
+);
+
 export default router;

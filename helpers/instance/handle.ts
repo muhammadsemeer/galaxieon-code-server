@@ -190,9 +190,11 @@ export const deleteInstance = (id: string, userId: string): Promise<void> => {
 };
 
 export const getDeletedInstances = (
-  userId: string
+  userId: string,
+  id?: string
 ): Promise<InstanceType[]> => {
   return new Promise(async (resolve, reject) => {
+    let subQuery = id ? { id } : {};
     try {
       let fromDate = new Date(new Date().setDate(new Date().getDate() - 3));
       let toDate = new Date(new Date().setHours(24, 0, 0, 0));
@@ -202,6 +204,7 @@ export const getDeletedInstances = (
             deletedAt: { [Op.gte]: fromDate, [Op.lte]: toDate },
             status: false,
             UserId: userId,
+            ...subQuery,
           },
           attributes: [
             "id",
@@ -222,6 +225,30 @@ export const getDeletedInstances = (
   });
 };
 
+export const retriveInstance = (
+  id: string,
+  userId: string
+): Promise<InstanceType> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance = await getDeletedInstances(userId, id);
+      if (instance.length === 0)
+        return reject({
+          status: 404,
+          message: "Your Instance Permantly Deleted",
+        });
+      await Instance.update(
+        { deletedAt: null, status: true },
+        { where: { id } }
+      );
+      let updatedInstance = await getInstanceById(id);
+      resolve(updatedInstance);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
@@ -232,6 +259,7 @@ const defaultExports = {
   edited,
   deleteInstance,
   getDeletedInstances,
+  retriveInstance,
 };
 
 export default defaultExports;
