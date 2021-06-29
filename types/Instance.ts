@@ -23,7 +23,6 @@ export interface Instance {
   forks?: number;
   deletedAt?: Date;
   status?: boolean;
-  serId?: string;
   UserId?: string;
   User?: User;
 }

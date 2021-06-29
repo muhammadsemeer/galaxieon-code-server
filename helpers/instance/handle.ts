@@ -249,6 +249,34 @@ export const retriveInstance = (
   });
 };
 
+export const forkInstance = (id: string, UserId: string): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance: any = await getInstanceById(id);
+      let fork = {
+        ids: { instance: instance.id, UserId: instance.UserId },
+        from: `${instance.User?.name}/${instance.name}`,
+      };
+      let newInstance = await Instance.create({
+        name: instance.name,
+        keyword: instance.keyword,
+        description: instance.description,
+        subdomain: instance.subdomain ? Date.now().toString(36) : null,
+        files: instance.files,
+        fork,
+        UserId,
+      });
+      let from = path.join(__dirname, "../../public/instances/", instance.id);
+      let to = path.join(__dirname, "../../public/instances/", newInstance.id);
+      await copyFolder(from, to);
+      await instance.increment({ forks: 1 });
+      resolve(newInstance);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
@@ -260,6 +288,7 @@ const defaultExports = {
   deleteInstance,
   getDeletedInstances,
   retriveInstance,
+  forkInstance,
 };
 
 export default defaultExports;

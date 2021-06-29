@@ -92,7 +92,18 @@ router.get(
   verifyToken,
   (req: RequestWithUser, res: Response, next: NextFunction) => {
     instaceHandler
-      .retriveInstance(req.params.id,req.user.id)
+      .retriveInstance(req.params.id, req.user.id)
+      .then((instance) => res.json(instance))
+      .catch((err) => next(err));
+  }
+);
+
+router.get(
+  "/fork/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .forkInstance(req.params.id, req.user.id)
       .then((instance) => res.json(instance))
       .catch((err) => next(err));
   }
