@@ -32,6 +32,13 @@ router.get(
   }
 );
 
+router.get("/all", (req: Request, res: Response, next: NextFunction) => {
+  instaceHandler
+    .getAllInstances()
+    .then((instances) => res.json(instances))
+    .catch((err) => next(err));
+})
+
 router.get("/:id", (req: Request, res: Response, next: NextFunction) => {
   instaceHandler
     .getInstanceById(req.params.id)
