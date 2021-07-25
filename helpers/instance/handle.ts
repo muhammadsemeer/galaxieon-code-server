@@ -90,8 +90,11 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
               "name",
               "description",
               "keywords",
+              "views",
+              "forks",
               "likes",
               "shares",
+              "lastEditied"
             ],
             where: { userId: id, status: true },
           }
@@ -107,6 +110,9 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
               "keywords",
               "likes",
               "shares",
+              "views",
+              "forks",
+              "lastEditied"
             ],
             where: { status: true },
           };
