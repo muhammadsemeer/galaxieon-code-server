@@ -154,8 +154,11 @@ export const updateInstance = (
         "name",
         "description",
         "keywords",
+        "views",
+        "forks",
         "likes",
         "shares",
+        "lastEditied"
       ]);
       resolve(updated);
     } catch (error) {
