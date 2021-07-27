@@ -223,6 +223,8 @@ export const getDeletedInstances = (
             "likes",
             "views",
             "shares",
+            "forks",
+            "deletedAt"
           ],
         },
         { raw: true }
