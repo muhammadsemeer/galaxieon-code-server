@@ -252,7 +252,17 @@ export const retriveInstance = (
         { deletedAt: null, status: true },
         { where: { id } }
       );
-      let updatedInstance = await getInstanceById(id);
+      let updatedInstance = await getInstanceById(id,[
+        "id",
+        "name",
+        "description",
+        "keywords",
+        "views",
+        "forks",
+        "likes",
+        "shares",
+        "lastEditied"
+      ]);
       resolve(updatedInstance);
     } catch (error) {
       reject(error);
