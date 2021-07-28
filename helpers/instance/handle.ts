@@ -94,7 +94,7 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
               "forks",
               "likes",
               "shares",
-              "lastEditied"
+              "lastEditied",
             ],
             where: { userId: id, status: true },
           }
@@ -112,7 +112,7 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
               "shares",
               "views",
               "forks",
-              "lastEditied"
+              "lastEditied",
             ],
             where: { status: true },
           };
@@ -158,7 +158,7 @@ export const updateInstance = (
         "forks",
         "likes",
         "shares",
-        "lastEditied"
+        "lastEditied",
       ]);
       resolve(updated);
     } catch (error) {
@@ -224,7 +224,7 @@ export const getDeletedInstances = (
             "views",
             "shares",
             "forks",
-            "deletedAt"
+            "deletedAt",
           ],
         },
         { raw: true }
@@ -252,7 +252,7 @@ export const retriveInstance = (
         { deletedAt: null, status: true },
         { where: { id } }
       );
-      let updatedInstance = await getInstanceById(id,[
+      let updatedInstance = await getInstanceById(id, [
         "id",
         "name",
         "description",
@@ -261,7 +261,7 @@ export const retriveInstance = (
         "forks",
         "likes",
         "shares",
-        "lastEditied"
+        "lastEditied",
       ]);
       resolve(updatedInstance);
     } catch (error) {
@@ -291,7 +291,17 @@ export const forkInstance = (id: string, UserId: string): Promise<any> => {
       let to = path.join(__dirname, "../../public/instances/", newInstance.id);
       await copyFolder(from, to);
       await instance.increment({ forks: 1 });
-      resolve(newInstance);
+      resolve({
+        id: newInstance.id,
+        name: newInstance.name,
+        description: newInstance.description,
+        keywords: newInstance.keywords,
+        views: newInstance.views,
+        forks: newInstance.forks,
+        likes: newInstance.likes,
+        shares: newInstance.shares,
+        lastEditied: newInstance.lastEditied,
+      });
     } catch (error) {
       reject(error);
     }
