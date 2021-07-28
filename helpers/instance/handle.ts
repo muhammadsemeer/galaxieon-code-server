@@ -280,7 +280,7 @@ export const forkInstance = (id: string, UserId: string): Promise<any> => {
       };
       let newInstance = await Instance.create({
         name: instance.name,
-        keyword: instance.keyword,
+        keywords: instance.keywords,
         description: instance.description,
         subdomain: instance.subdomain ? Date.now().toString(36) : null,
         files: instance.files,
