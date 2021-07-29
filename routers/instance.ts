@@ -2,6 +2,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { verifyToken } from "../auth/token";
 import { RequestWithUser } from "../types/User";
 import instaceHandler from "../helpers/instance/handle";
+import screenshot from "../helpers/screenshot";
+import { join } from "path";
 
 const router: Router = Router();
 
@@ -37,7 +39,7 @@ router.get("/all", (req: Request, res: Response, next: NextFunction) => {
     .getAllInstances()
     .then((instances) => res.json(instances))
     .catch((err) => next(err));
-})
+});
 
 router.get("/:id", (req: Request, res: Response, next: NextFunction) => {
   instaceHandler
@@ -113,6 +115,17 @@ router.get(
       .forkInstance(req.params.id, req.user.id)
       .then((instance) => res.json(instance))
       .catch((err) => next(err));
+  }
+);
+
+router.get(
+  "/screenshot/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    screenshot(req.params.id)
+      .then((path) => {
+        res.sendFile(join(__dirname, "../", path));
+      })
+      .catch((error) => next(error));
   }
 );
 
