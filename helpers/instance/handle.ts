@@ -65,7 +65,7 @@ export const getInstanceById = (
           where: { [Op.or]: { id, subdomain: id } },
           include: {
             model: User,
-            attributes: ["id", "name", "profileImage"],
+            attributes: ["id", "name", "profileImage","email","createdAt"],
           },
           attributes: fields,
         },
