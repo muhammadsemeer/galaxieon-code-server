@@ -12,7 +12,11 @@ const screenshot = (id: string): Promise<string> => {
       let path = join(__dirname, "../../public/screenshots/");
       if (!existsSync(path)) mkdirSync(path);
       const browser = await puppeteer.launch({
-        args: ["--ignore-certificate-errors"],
+        args: [
+          "--ignore-certificate-errors",
+          "--disable-dev-shm-usage",
+          "--no-sandbox",
+        ],
       });
       const page = await browser.newPage();
       await page.goto(url);
