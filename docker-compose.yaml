@@ -15,7 +15,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.dev
-    image: gcode-server
+    image: gcode-server:dev
     container_name: gcode-dev-server
     environment:
       DB_HOST: mariadb
