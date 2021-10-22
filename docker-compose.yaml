@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10.5
+    container_name: gcode-db
+    volumes:
+      - gcode-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: gcode
+      MYSQL_DATABASE: galaxieonCode
+    networks:
+      - gcode-network
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    image: gcode-server:dev
+    container_name: gcode-dev-server
+    environment:
+      DB_HOST: mariadb
+      DB_USER: root
+      DB_PASS: gcode
+    volumes:
+      - /home/node/app/node_modules
+      - .:/home/node/app/
+    ports:
+      - "3001:3001"
+    networks:
+      - gcode-network
+
+volumes:
+  gcode-data:
+    name: gcode-data
+
+networks:
+  gcode-network:
+    name: gcode-network
+    driver: bridge

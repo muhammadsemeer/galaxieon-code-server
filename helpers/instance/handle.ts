@@ -65,7 +65,7 @@ export const getInstanceById = (
           where: { [Op.or]: { id, subdomain: id } },
           include: {
             model: User,
-            attributes: ["id", "name", "profileImage"],
+            attributes: ["id", "name", "profileImage","email","createdAt"],
           },
           attributes: fields,
         },
@@ -90,8 +90,11 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
               "name",
               "description",
               "keywords",
+              "views",
+              "forks",
               "likes",
               "shares",
+              "lastEditied",
             ],
             where: { userId: id, status: true },
           }
@@ -107,6 +110,9 @@ export const getAllInstances = (id?: string): Promise<InstanceType[]> => {
               "keywords",
               "likes",
               "shares",
+              "views",
+              "forks",
+              "lastEditied",
             ],
             where: { status: true },
           };
@@ -148,8 +154,11 @@ export const updateInstance = (
         "name",
         "description",
         "keywords",
+        "views",
+        "forks",
         "likes",
         "shares",
+        "lastEditied",
       ]);
       resolve(updated);
     } catch (error) {
@@ -169,6 +178,136 @@ export const edited = (id: string): Promise<void> => {
   });
 };
 
+export const deleteInstance = (id: string, userId: string): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance = await getInstanceById(id);
+      if (instance.UserId !== userId)
+        return reject({
+          status: 403,
+          message: "You Have No right to delete other's Instance",
+        });
+      await Instance.update(
+        { deletedAt: Date.now(), status: false },
+        { where: { id } }
+      );
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const getDeletedInstances = (
+  userId: string,
+  id?: string
+): Promise<InstanceType[]> => {
+  return new Promise(async (resolve, reject) => {
+    let subQuery = id ? { id } : {};
+    try {
+      let fromDate = new Date(new Date().setDate(new Date().getDate() - 3));
+      let toDate = new Date(new Date().setHours(24, 0, 0, 0));
+      let instances: InstanceType[] = await Instance.findAll(
+        {
+          where: {
+            deletedAt: { [Op.gte]: fromDate, [Op.lte]: toDate },
+            status: false,
+            UserId: userId,
+            ...subQuery,
+          },
+          attributes: [
+            "id",
+            "name",
+            "description",
+            "keywords",
+            "likes",
+            "views",
+            "shares",
+            "forks",
+            "deletedAt",
+          ],
+        },
+        { raw: true }
+      );
+      resolve(instances);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const retriveInstance = (
+  id: string,
+  userId: string
+): Promise<InstanceType> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance = await getDeletedInstances(userId, id);
+      if (instance.length === 0)
+        return reject({
+          status: 404,
+          message: "Your Instance Permantly Deleted",
+        });
+      await Instance.update(
+        { deletedAt: null, status: true },
+        { where: { id } }
+      );
+      let updatedInstance = await getInstanceById(id, [
+        "id",
+        "name",
+        "description",
+        "keywords",
+        "views",
+        "forks",
+        "likes",
+        "shares",
+        "lastEditied",
+      ]);
+      resolve(updatedInstance);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const forkInstance = (id: string, UserId: string): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let instance: any = await getInstanceById(id);
+      let fork = {
+        ids: { instance: instance.id, UserId: instance.UserId },
+        from: `${instance.User?.name}/${instance.name}`,
+      };
+      let newInstance = await Instance.create({
+        name: instance.name,
+        keywords: instance.keywords,
+        description: instance.description,
+        subdomain: instance.subdomain ? Date.now().toString(36) : null,
+        files: instance.files,
+        fork,
+        UserId,
+      });
+      let from = path.join(__dirname, "../../public/instances/", instance.id);
+      let to = path.join(__dirname, "../../public/instances/", newInstance.id);
+      await copyFolder(from, to);
+      await instance.increment({ forks: 1 });
+      resolve({
+        id: newInstance.id,
+        name: newInstance.name,
+        description: newInstance.description,
+        keywords: newInstance.keywords,
+        views: newInstance.views,
+        forks: newInstance.forks,
+        likes: newInstance.likes,
+        shares: newInstance.shares,
+        lastEditied: newInstance.lastEditied,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const defaultExports = {
   createInstance,
   copyFolder,
@@ -177,6 +316,10 @@ const defaultExports = {
   getCode,
   updateInstance,
   edited,
+  deleteInstance,
+  getDeletedInstances,
+  retriveInstance,
+  forkInstance,
 };
 
 export default defaultExports;

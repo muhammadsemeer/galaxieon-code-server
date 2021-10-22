@@ -2,8 +2,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { verifyToken } from "../auth/token";
 import { RequestWithUser } from "../types/User";
 import instaceHandler from "../helpers/instance/handle";
-import fs from "fs";
-import path from "path";
+import screenshot from "../helpers/screenshot";
+import { join } from "path";
 
 const router: Router = Router();
 
@@ -11,7 +11,7 @@ router.post(
   "/create",
   verifyToken,
   (req: RequestWithUser, res: Response, next: NextFunction) => {
-    console.log(req.user)
+    console.log(req.user);
     if (!req.query.template)
       return next({ status: 400, message: "Template Id Missing" });
     instaceHandler
@@ -22,6 +22,24 @@ router.post(
       .catch((err) => next(err));
   }
 );
+
+router.get(
+  "/deleted",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .getDeletedInstances(req.user.id)
+      .then((instances) => res.json(instances))
+      .catch((err) => next(err));
+  }
+);
+
+router.get("/all", (req: Request, res: Response, next: NextFunction) => {
+  instaceHandler
+    .getAllInstances()
+    .then((instances) => res.json(instances))
+    .catch((err) => next(err));
+});
 
 router.get("/:id", (req: Request, res: Response, next: NextFunction) => {
   instaceHandler
@@ -49,7 +67,6 @@ router.get("/code/*", (req: Request, res: Response, next: NextFunction) => {
     .catch((err) => next(err));
 });
 
-
 router.put(
   "/:id",
   verifyToken,
@@ -60,6 +77,55 @@ router.put(
         res.json(updated);
       })
       .catch((err) => next(err));
+  }
+);
+
+router.delete(
+  "/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    let date = new Date(
+      new Date().setDate(new Date().getDate() + 3)
+    ).toDateString();
+    instaceHandler
+      .deleteInstance(req.params.id, req.user.id)
+      .then(() =>
+        res.json({ status: "OK", message: `You Can retrive it before ${date}` })
+      )
+      .catch((err) => next(err));
+  }
+);
+
+router.get(
+  "/retrive/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .retriveInstance(req.params.id, req.user.id)
+      .then((instance) => res.json(instance))
+      .catch((err) => next(err));
+  }
+);
+
+router.get(
+  "/fork/:id",
+  verifyToken,
+  (req: RequestWithUser, res: Response, next: NextFunction) => {
+    instaceHandler
+      .forkInstance(req.params.id, req.user.id)
+      .then((instance) => res.json(instance))
+      .catch((err) => next(err));
+  }
+);
+
+router.get(
+  "/screenshot/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    screenshot(req.params.id)
+      .then((path) => {
+        res.sendFile(join(__dirname, "../", path));
+      })
+      .catch((error) => next(error));
   }
 );
 

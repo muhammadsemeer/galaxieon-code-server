@@ -84,14 +84,6 @@ router.post("/github", (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.get(
-  "/check",
-  verifyToken,
-  (req: RequestWithUser | any, res: Response) => {
-    res.json(req.user);
-  }
-);
-
 router.post("/admin", (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.token) return next({ status: 400, message: "Token Required" });
   try {
@@ -122,5 +114,19 @@ router.post("/admin", (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 });
+
+router.get(
+  "/logout/:type",
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      req.params.type === "admin"
+        ? res.clearCookie("admAcess")
+        : res.clearCookie("accessToken").clearCookie("refreshToken");
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

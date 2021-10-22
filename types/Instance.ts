@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 export type File = { name: string; files: string[] };
 
 export interface Files {
@@ -11,6 +13,7 @@ export interface Instance {
   name: string;
   description?: string;
   keywords?: string;
+  subdomain?: string;
   isPriavte?: boolean;
   fork?: boolean;
   files: Files;
@@ -21,4 +24,6 @@ export interface Instance {
   forks?: number;
   deletedAt?: Date;
   status?: boolean;
+  UserId?: string;
+  User?: User;
 }
