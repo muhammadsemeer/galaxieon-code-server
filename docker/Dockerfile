@@ -4,7 +4,6 @@ FROM node:lts-alpine
 EXPOSE 3001
 ENV NODE_ENV=production
 
-RUN apk add --no-cache python make g++
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -27,8 +26,10 @@ COPY ./package.json .
 RUN npm install --production=false
 
 COPY . .
-# RUN chmod ugo+rwx .
+
 RUN npm run build
+
+RUN npm prune --production
 
 RUN npm run copy
 
