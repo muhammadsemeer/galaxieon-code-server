@@ -24,20 +24,14 @@ server.listen(PORT);
 
 app.disable("x-powered-by");
 // Socket io
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+const io = new Server(server);
 
 io.on("connection", (socket) => connection(socket, io));
 let liveReload = io.of("/liveReload");
 liveReload.on("connection", (socket) => liveReloadSocket(liveReload, socket));
 let editor = io.of("/editor");
 editor.use(cookieParser);
-editor.use(verifyTokenSocket)
+editor.use(verifyTokenSocket);
 editor.on("connection", (socket) => editorSocket(editor, socket));
 
 server.on("listening", listen);
@@ -53,7 +47,18 @@ async function listen() {
     console.log(
       chalk.cyanBright("Server "),
       chalk.cyanBright("UP and running on "),
-      chalk.yellowBright(PORT)
+      chalk.yellowBright(PORT),
+      chalk.cyanBright(process.env.NODE_ENV, "Mode")
     );
   });
 }
+
+// error handler
+
+process.on("unhandledRejection", (reason, p) => {
+  console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.log("Uncaught Exception:", err);
+});
