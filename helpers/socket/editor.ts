@@ -12,8 +12,8 @@ export const editorSocket = (io: Namespace, socket: SocketWithCookies) => {
     id = instanceId;
     console.log("Editor connected to instance: " + instanceId);
   });
-  socket.on("change", (file, value, instanceId, cb) => {
-    editCode(file, instanceId, value)
+  socket.on("change", (file, value, instanceId, userId, cb) => {
+    editCode(file, instanceId, userId, value)
       .then(() => {
         isChangesMade = true;
         socket.broadcast.emit("change_by_other", value);

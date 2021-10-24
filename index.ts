@@ -56,9 +56,9 @@ async function listen() {
 // error handler
 
 process.on("unhandledRejection", (reason, p) => {
-  console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+  console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
 });
 
 process.on("uncaughtException", (err) => {
-  console.log("Uncaught Exception:", err);
+  console.error("Uncaught Exception:", err);
 });
