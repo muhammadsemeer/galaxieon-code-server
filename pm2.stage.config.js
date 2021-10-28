@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "gcode-server-staginf",
+      name: "gcode-server-staging",
       script: "./dist/index.js",
       env: {
       NODE_ENV = "staging",
