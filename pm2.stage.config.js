@@ -13,9 +13,9 @@ module.exports = {
       GOOGLE_CLIENT_SECRET = "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",
       GITHUB_CLIENT_ID = "dc966ddf8a37cf15051e",
       GITHUB_CLIENT_SECRET = "725b59d314441c2eacb9fda7cecf236a8b3ba055", 
-      JWT_SECRET = "stage"
-      JWT_REFRESH_TOKEN = "stage-refersh"
-      JWT_ADMIN = "stage-admin"
+      JWT_SECRET = "stage",
+      JWT_REFRESH_TOKEN = "stage-refersh",
+      JWT_ADMIN = "stage-admin",
       }
     },
   ],
