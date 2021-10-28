@@ -7,7 +7,7 @@ module.exports = {
       NODE_ENV: "staging",
       PORT: 5000,
       DB_HOST: "localhost",
-      DB_NAME: "gcode-stage"
+      DB_NAME: "gcodeStage"
       DB_USER: "gcode",
       DB_PASS: "gcodestaging",
       GOOGLE_CLIENT_ID: "402670498374-o3clsli8p0bnsqa8s4ibpeo7o3re5smq.apps.googleusercontent.com",
