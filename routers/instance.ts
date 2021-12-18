@@ -121,11 +121,12 @@ router.get(
 router.get(
   "/screenshot/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    screenshot(req.params.id)
-      .then((path) => {
-        res.sendFile(join(__dirname, "../", path));
-      })
-      .catch((error) => next(error));
+    res.sendStatus(200);
+    // screenshot(req.params.id)
+    //   .then((path) => {
+    //     res.sendFile(join(__dirname, "../", path));
+    //   })
+    //   .catch((error) => next(error));
   }
 );
 
