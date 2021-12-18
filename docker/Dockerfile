@@ -1,5 +1,5 @@
 # stage one build
-FROM node:lts-alpine
+FROM node:14-alpine
 
 EXPOSE 3001
 ENV NODE_ENV=production
