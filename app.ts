@@ -11,26 +11,43 @@ import logger from "morgan";
 import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
-import { randomBytes } from "crypto";
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 
 config();
 
 const app: Application = express();
+
+if (process.env.NODE_ENV !== "development") {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [
+      new Sentry.Integrations.Http({ tracing: true }),
+      new Tracing.Integrations.Express({ app }),
+    ],
+    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE),
+    environment: process.env.NODE_ENV,
+  });
+}
 
 export const cookieOption: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production" ? true : false,
 };
 
-const corsOption: CorsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE" , "PATCH"],
-  exposedHeaders: ["set-cookie"],
-};
+const corsOption: CorsOptions =
+  process.env.NODE_ENV === "development"
+    ? {
+        origin: "http://localhost:3000",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        exposedHeaders: ["set-cookie"],
+      }
+    : {};
 
-// Cors and Helmet (CSP)
 app
+  .use(Sentry.Handlers.requestHandler())
+  .use(Sentry.Handlers.tracingHandler())
   .use(
     helmet({
       contentSecurityPolicy: false,
@@ -64,6 +81,8 @@ app.use(staticRouter);
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).send("Route Not Found");
 });
+
+app.use(Sentry.Handlers.errorHandler());
 
 // Catch error
 app.use((err: Error | any, req: Request, res: Response, next: NextFunction) => {

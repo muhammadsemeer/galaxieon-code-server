@@ -2,7 +2,7 @@ import http from "http";
 import app from "./app";
 import chalk from "chalk";
 import db from "./config/dbconnection";
-import { Server } from "socket.io";
+import { Server, ServerOptions } from "socket.io";
 
 import "./models/User";
 import "./models/Template";
@@ -23,8 +23,19 @@ app.set("port", PORT);
 server.listen(PORT);
 
 app.disable("x-powered-by");
+
+const socketOptions: Partial<ServerOptions> = {
+  cors:
+    process.env.NODE_ENV === "development"
+      ? {
+          origin: "http://localhost:3000",
+          credentials: true,
+        }
+      : {},
+};
+
 // Socket io
-const io = new Server(server);
+const io = new Server(server, socketOptions);
 
 io.on("connection", (socket) => connection(socket, io));
 let liveReload = io.of("/liveReload");

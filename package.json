@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/muhammadsemeer/galaxieon-code-server#readme",
   "dependencies": {
+    "@sentry/node": "^6.16.1",
+    "@sentry/tracing": "^6.16.1",
     "axios": "^0.21.1",
     "chalk": "^3.0.0",
     "chokidar": "^3.5.2",
