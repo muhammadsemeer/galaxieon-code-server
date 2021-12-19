@@ -8,8 +8,7 @@ export const getTemplates = (): Promise<TemplateType[]> => {
         { status: true },
         { raw: true }
       );
-      // resolve(templates);
-      throw new Error("Error");
+      resolve(templates);
     } catch (error) {
       reject(error);
     }
