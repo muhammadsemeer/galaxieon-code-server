@@ -27,6 +27,7 @@ if (process.env.NODE_ENV !== "development") {
     ],
     tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE),
     environment: process.env.NODE_ENV,
+    release: process.env.npm_package_version,
   });
 }
 

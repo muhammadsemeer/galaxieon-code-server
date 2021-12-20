@@ -1,6 +1,6 @@
 {
   "name": "galaxieon-code-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Code Editor Super Powered By Galaxieon",
   "main": "dist/index.js",
   "scripts": {
