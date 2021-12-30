@@ -17,15 +17,29 @@ services:
       dockerfile: docker/Dockerfile.dev
     image: gcode-server:dev
     container_name: gcode-dev-server
+    depends_on:
+      - mariadb
     environment:
+      PORT: "80"
       DB_HOST: mariadb
       DB_USER: root
       DB_PASS: gcode
     volumes:
       - /home/node/app/node_modules
       - .:/home/node/app/
+    networks:
+      - gcode-network
+
+  nginx:
+    build:
+      context: nginx
+      dockerfile: ./Dockerfile
+    image: gcode-nginx:dev
+    container_name: gcode-nginx
+    depends_on:
+      - server
     ports:
-      - "3001:3001"
+      - "80:80"
     networks:
       - gcode-network
 
