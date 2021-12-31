@@ -13,11 +13,11 @@ const liveReload = (src: string, id: string): Promise<string> => {
 
       const document = parse(html);
 
-      const body = document.querySelector("body");
+      const head = document.querySelector("head");
       let script = parse(
         `<script src="${process.env.URL}/api/static/gcode/utils.js" data-id=${id}></script>`
       );
-      body?.appendChild(script);
+      head?.appendChild(script);
 
       resolve(document.toString());
     });
