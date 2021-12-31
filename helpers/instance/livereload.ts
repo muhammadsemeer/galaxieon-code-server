@@ -14,20 +14,9 @@ const liveReload = (src: string, id: string): Promise<string> => {
       const document = parse(html);
 
       const body = document.querySelector("body");
-      let script = parse(`
-      <script src="/socket.io/socket.io.js"></script>
-      <script>
-        const socket = io('/liveReload');
-        if(!sessionStorage.getItem('isFirstTime')) {
-            console.log('Live Reload Enabled'); 
-            sessionStorage.setItem('isFirstTime', true)
-        };
-        socket.on("connect",()=>{
-            socket.emit("watch",'${id}')
-        })
-        socket.on('changes', ()=> location.reload())
-      </script>
-      `);
+      let script = parse(
+        `<script src="${process.env.URL}/api/static/gcode/utils.js" data-id=${id}></script>`
+      );
       body?.appendChild(script);
 
       resolve(document.toString());
