@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon index.ts",
+    "prebuild": "bash scripts/prebuild.sh",
     "build": "tsc --build",
-    "copy": "cp -r public/ dist/"
+    "postbuild": "bash scripts/postbuild.sh"
   },
   "repository": {
     "type": "git",
