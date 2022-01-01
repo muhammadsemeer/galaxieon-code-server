@@ -3,6 +3,7 @@ import { verifyAdmin } from "../auth/token";
 import { RequestWithAdmin, User } from "../types/User";
 import UserDetails from "../helpers/admin/user";
 import { createUserOrLogUser } from "../auth/handleUser";
+import { getStats } from "../helpers/admin/utils";
 
 const router: Router = Router();
 
@@ -60,5 +61,14 @@ router.patch(
       .catch((err) => next(err));
   }
 );
+
+router.get("/stats", async (req: RequestWithAdmin, res: Response, next: NextFunction) => {
+  try {
+    const stats = await getStats()
+    res.json(stats)
+  } catch (e) {
+    next(e);
+  }
+})
 
 export default router;
