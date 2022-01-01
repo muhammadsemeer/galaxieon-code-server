@@ -62,7 +62,6 @@ export const logAdmin = async (
       },
       attributes: ["id", "name", "email"],
     });
-    console.log(admin)
     admin ? cb(null, admin) : cb({ status: 404, message: "Admin Not Found" });
   } catch (error) {
     cb(error);
