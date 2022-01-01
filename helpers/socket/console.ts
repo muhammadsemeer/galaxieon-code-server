@@ -33,6 +33,9 @@ export const consoleSocket = (io: Namespace, socket: Socket) => {
   ];
   methods.forEach((method) => {
     socket.on(method, (roomId, args: any[]) => {
+      if (args.length === 0) {
+        socket.to(`editor_${roomId}`).emit(`console.${method}`);
+      }
       args.forEach((arg) => {
         socket.to(`editor_${roomId}`).emit(`console.${method}`, arg);
       });
