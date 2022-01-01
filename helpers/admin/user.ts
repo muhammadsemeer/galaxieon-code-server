@@ -18,9 +18,11 @@ export const getAllUsers = (): Promise<UserType[]> => {
             where: {
               status: true,
             },
+            required: false,
           },
         ],
         order: [["createdAt", "DESC"]],
+        group: ["User.id"],
         raw: true,
       });
       resolve(users);
