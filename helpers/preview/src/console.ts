@@ -15,6 +15,22 @@ if (isIframe) {
   });
 
   for (let key in nativeConsole) {
+    if (key === "error") {
+      console.error = (...args: any[]) => {
+        nativeConsole.error(...args);
+        args = args.map((arg) => {
+          if (arg instanceof Error) {
+            return {
+              message: arg.message,
+              stack: arg.stack,
+            };
+          }
+          return arg;
+        });
+        socket.emit("error", id, args);
+      };
+      continue;
+    }
     console[key] = (...args: any[]) => {
       socket.emit(key, id, args);
       nativeConsole[key](...args);
