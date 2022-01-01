@@ -1,10 +1,10 @@
 #! bin/bash
 
 echo "Running Pre Build"
-# if root dist exists deleting it
-if [ -d "dist" ]; then
-    rm -r dist/
-fi
+# # if root dist exists deleting it
+# if [ -d "dist" ]; then
+#     rm -r dist/
+# fi
 
 cd helpers/preview 
 
