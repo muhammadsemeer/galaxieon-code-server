@@ -1,3 +1,5 @@
+import Sequelize from "sequelize";
+import Instance from "../../models/Instance";
 import User from "../../models/User";
 import { User as UserType } from "../../types/User";
 
@@ -5,6 +7,19 @@ export const getAllUsers = (): Promise<UserType[]> => {
   return new Promise(async (resolve, reject) => {
     try {
       let users: UserType[] = await User.findAll({
+        attributes: [
+          "*",
+          [Sequelize.fn("COUNT", Sequelize.col("Instances.id")), "instances"],
+        ],
+        include: [
+          {
+            model: Instance,
+            attributes: [],
+            where: {
+              status: true,
+            },
+          },
+        ],
         order: [["createdAt", "DESC"]],
         raw: true,
       });
