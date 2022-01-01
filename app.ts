@@ -36,15 +36,12 @@ export const cookieOption: CookieOptions = {
   secure: process.env.NODE_ENV === "production" ? true : false,
 };
 
-const corsOption: CorsOptions =
-  process.env.NODE_ENV === "development"
-    ? {
-        origin: "http://localhost:3000",
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        exposedHeaders: ["set-cookie"],
-      }
-    : {};
+const corsOption: CorsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  exposedHeaders: ["set-cookie"],
+};
 
 app
   .use(Sentry.Handlers.requestHandler())
@@ -54,8 +51,11 @@ app
       contentSecurityPolicy: false,
       frameguard: false,
     })
-  )
-  .use(cors(corsOption));
+  );
+
+if (process.env.NODE_ENV === "development") {
+  app.use(cors(corsOption));
+}
 
 // Middlewares
 app
