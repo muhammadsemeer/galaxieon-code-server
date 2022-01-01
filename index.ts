@@ -12,6 +12,7 @@ import { liveReloadSocket } from "./helpers/instance/livereload";
 import { editorSocket } from "./helpers/socket/editor";
 import cookieParser from "./helpers/socket/socket-cookie-parser";
 import { verifyTokenSocket } from "./auth/token";
+import { consoleSocket } from "./helpers/socket/console";
 
 // Creating http server
 const server = http.createServer(app);
@@ -38,9 +39,13 @@ const socketOptions: Partial<ServerOptions> = {
 const io = new Server(server, socketOptions);
 
 io.on("connection", (socket) => connection(socket, io));
-let liveReload = io.of("/liveReload");
+const liveReload = io.of("/liveReload");
 liveReload.on("connection", (socket) => liveReloadSocket(liveReload, socket));
-let editor = io.of("/editor");
+const consoleNameSpace = io.of("/console");
+consoleNameSpace.on("connection", (socket) =>
+  consoleSocket(consoleNameSpace, socket)
+);
+const editor = io.of("/editor");
 editor.use(cookieParser);
 editor.use(verifyTokenSocket);
 editor.on("connection", (socket) => editorSocket(editor, socket));
