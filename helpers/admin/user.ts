@@ -4,7 +4,10 @@ import { User as UserType } from "../../types/User";
 export const getAllUsers = (): Promise<UserType[]> => {
   return new Promise(async (resolve, reject) => {
     try {
-      let users: UserType[] = await User.findAll({ raw: true });
+      let users: UserType[] = await User.findAll({
+        order: [["createdAt", "DESC"]],
+        raw: true,
+      });
       resolve(users);
     } catch (error) {
       reject(error);
@@ -23,15 +26,14 @@ export const getOneUser = (id: string): Promise<UserType> => {
   });
 };
 
-export const changeUserStatus = (
-  id: string,
-  status: string
-): Promise<void> => {
+export const changeUserStatus = (id: string, status: string): Promise<void> => {
   return new Promise(async (resolve, reject) => {
     try {
       await User.update({ status }, { where: { id } });
-      resolve()
-    } catch (error) { reject(error) }
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
